@@ -1,0 +1,33 @@
+# Virtual environments
+.env/
+.venv/
+venv/
+env/
+
+# Secret / credential files
+.env.local
+.env.*.local
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# PyTest cache
+.pytest_cache/
+
+# Playwright test results and traces
+test-results/
+playwright-report/
+
+# Reports
+reports/
+allure-results/
+allure-report/
+
+# Debug screenshots/images
+debug_image/
+
+# Local JSON output files
+user_data.json
