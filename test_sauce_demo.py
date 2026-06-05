@@ -24,7 +24,7 @@ def test_invalid_username(page: Page):
     error_message = page.locator('[data-test="error"]')
 
     expect(error_message).to_be_visible()
-    expect(error_message).to_contain_text("Username and password success match")
+    expect(error_message).to_contain_text("Username and password do not match")
 
 
 def test_invalid_password(page: Page):
