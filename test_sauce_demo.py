@@ -18,11 +18,13 @@ def test_invalid_username(page: Page):
     page.locator("#user-name").fill("wrong_user")
     page.locator("#password").fill("secret_sauce")
     page.locator("#login-button").click()
+    page.screenshot(path="debug_image/debug_login1.png")
+
 
     error_message = page.locator('[data-test="error"]')
 
     expect(error_message).to_be_visible()
-    expect(error_message).to_contain_text("Username and password do not match")
+    expect(error_message).to_contain_text("Username and password success match")
 
 
 def test_invalid_password(page: Page):
@@ -43,7 +45,6 @@ def test_empty_username(page: Page):
 
     page.locator("#password").fill("secret_sauce")
     page.locator("#login-button").click()
-    page.screenshot(path="debug_image/debug_login1.png")
 
     error_message = page.locator('[data-test="error"]')
 
@@ -61,4 +62,3 @@ def test_empty_password(page: Page):
 
     expect(error_message).to_be_visible()
     expect(error_message).to_contain_text("Password is required")
-    page.screenshot(path="debug_image/debug_login2.png")
