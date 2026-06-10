@@ -1,0 +1,37 @@
+[
+  {
+    "test_name": "valid_login",
+    "username": "standard_user",
+    "password": "secret_sauce",
+    "expected_result": "success",
+    "expected_url": "https://www.saucedemo.com/inventory.html"
+  },
+  {
+    "test_name": "invalid_username",
+    "username": "wrong_user",
+    "password": "secret_sauce",
+    "expected_result": "error",
+    "expected_error": "Username and password do not match"
+  },
+  {
+    "test_name": "invalid_password",
+    "username": "standard_user",
+    "password": "wrong_password",
+    "expected_result": "error",
+    "expected_error": "Username and password do not match"
+  },
+  {
+    "test_name": "empty_username",
+    "username": "",
+    "password": "secret_sauce",
+    "expected_result": "error",
+    "expected_error": "Username is required"
+  },
+  {
+    "test_name": "empty_password",
+    "username": "standard_user",
+    "password": "",
+    "expected_result": "error",
+    "expected_error": "Password is required"
+  }
+]
