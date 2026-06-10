@@ -31,3 +31,6 @@ debug_image/
 
 # Local JSON output files
 user_data.json
+
+Reports/
+reports/
