@@ -18,7 +18,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11.9"
+          python-version: "3.12"
 
       - name: Install dependencies
         run: |
@@ -29,12 +29,23 @@ jobs:
         run: |
           python -m playwright install --with-deps
 
-      - name: Run Playwright tests
+      - name: Create Reports folder
         run: |
-          pytest -v --browser chromium --tracing=retain-on-failure
+          mkdir -p Reports
+
+      - name: Run Playwright tests and generate HTML report
+        run: |
+          pytest tests/ -v --browser chromium --html=Reports/pwreport.html --self-contained-html --tracing=retain-on-failure
+
+      - name: Upload HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-test-report
+          path: Reports/pwreport.html
 
       - name: Upload Playwright traces
-        if: ${{ !cancelled() }}
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-traces
