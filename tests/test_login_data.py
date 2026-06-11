@@ -8,10 +8,10 @@ login_test_data = read_json_file("test_data/login_data.json")
 
 
 @pytest.mark.parametrize("data", login_test_data, ids=[item["test_name"] for item in login_test_data])
-def test_login_with_json_data(page: Page, data):
+def test_login_with_json_data(page: Page, data, app_config):
     login_page = LoginPage(page)
 
-    login_page.open()
+    login_page.open(app_config["base_url"])
     login_page.login(data["username"], data["password"])
 
     if data["expected_result"] == "success":

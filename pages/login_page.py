@@ -1,31 +1,35 @@
 from playwright.sync_api import Page
-from config.settings import BASE_URL
+from pages.base_page import BasePage
 
 
-class LoginPage:
+class LoginPage(BasePage):
     def __init__(self, page: Page):
-        self.page = page
+        super().__init__(page)
+
         self.username_input = page.locator("#user-name")
         self.password_input = page.locator("#password")
         self.login_button = page.locator("#login-button")
         self.error_message = page.locator('[data-test="error"]')
 
-    def open(self):
-        self.page.goto(BASE_URL)
+    def open(self, base_url: str):
+        self.open_url(base_url)
 
-    def enter_username(self, username):
-        self.username_input.fill(username)
+    def enter_username(self, username: str):
+        self.fill_text(self.username_input, username)
 
-    def enter_password(self, password):
-        self.password_input.fill(password)
+    def enter_password(self, password: str):
+        self.fill_text(self.password_input, password)
 
     def click_login(self):
-        self.login_button.click()
+        self.click_element(self.login_button)
 
-    def login(self, username, password):
+    def login(self, username: str, password: str):
         self.enter_username(username)
         self.enter_password(password)
         self.click_login()
 
     def get_error_message(self):
-        return self.error_message.inner_text()
+        return self.get_text(self.error_message)
+
+    def verify_error_message(self, expected_error: str):
+        self.verify_partial_text(self.error_message, expected_error)

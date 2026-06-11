@@ -1,0 +1,32 @@
+{
+  "valid_checkout_user": {
+    "first_name": "Abdul",
+    "last_name": "Kadir",
+    "postal_code": "201301"
+  },
+
+  "negative_checkout_users": [
+    {
+      "test_name": "empty_first_name",
+      "first_name": "",
+      "last_name": "Kadir",
+      "postal_code": "201301",
+      "expected_error": "First Name is required"
+    },
+    {
+      "test_name": "empty_last_name",
+      "first_name": "Abdul",
+      "last_name": "",
+      "postal_code": "201301",
+      "expected_error": "Last Name is required"
+    },
+    {
+      "test_name": "empty_postal_code",
+      "first_name": "Abdul",
+      "last_name": "Kadir",
+      "postal_code": "",
+      "expected_error": "Postal Code is required"
+    }
+  ]
+
+}
