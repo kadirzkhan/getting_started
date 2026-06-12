@@ -5,7 +5,8 @@ from utils.data_reader import read_json_file
 checkout_data = read_json_file("test_data/checkout_data.json")
 negative_checkout_users = checkout_data["negative_checkout_users"]
 
-
+@pytest.mark.smoke
+@pytest.mark.checkout
 def test_complete_checkout_flow(inventory_page, cart_page, checkout_page):
     user_data = checkout_data["valid_checkout_user"]
 
@@ -29,7 +30,8 @@ def test_complete_checkout_flow(inventory_page, cart_page, checkout_page):
 
     checkout_page.verify_order_success_message()
 
-
+@pytest.mark.regression
+@pytest.mark.checkout
 @pytest.mark.parametrize(
     "user_data",
     negative_checkout_users,

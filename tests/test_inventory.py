@@ -1,7 +1,13 @@
+import pytest
+
+@pytest.mark.smoke
+@pytest.mark.inventory
 def test_inventory_page_title_after_login(inventory_page):
     inventory_page.verify_inventory_page_title()
 
 
+@pytest.mark.regression
+@pytest.mark.inventory
 def test_add_product_to_cart(inventory_page):
     inventory_page.add_backpack_to_cart()
 
