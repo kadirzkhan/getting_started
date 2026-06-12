@@ -29,13 +29,18 @@ jobs:
         run: |
           python -m playwright install --with-deps
 
-      - name: Create Reports folder
+      - name: Create folders
         run: |
           mkdir -p Reports
+          mkdir -p auth
 
-      - name: Run Playwright tests and generate HTML report
+      - name: Generate auth state
         run: |
-          pytest tests/ -v --browser chromium --html=Reports/pwreport.html --self-contained-html --tracing=retain-on-failure
+          pytest tests/test_auth_setup.py -v --env=qa --browser chromium
+
+      - name: Run tests and generate HTML report
+        run: |
+          pytest tests/test_login.py tests/test_login_data.py tests/test_inventory.py tests/test_cart.py tests/test_checkout.py -v --env=qa --browser chromium --html=Reports/pwreport.html --self-contained-html --tracing=retain-on-failure --screenshot=only-on-failure
 
       - name: Upload HTML report
         if: always()
@@ -44,9 +49,16 @@ jobs:
           name: html-test-report
           path: Reports/pwreport.html
 
-      - name: Upload Playwright traces
+      - name: Upload Playwright test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-traces
+          name: playwright-test-results
           path: test-results/
+
+      - name: Upload auth state for debugging
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: auth-state-debug
+          path: auth/
