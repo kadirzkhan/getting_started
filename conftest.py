@@ -6,6 +6,7 @@ from pages.cart_page import CartPage
 from pages.checkout_page import CheckoutPage
 from config.settings import ENVIRONMENTS
 from pathlib import Path
+from pages.file_upload_page import FileUploadPage
 
 
 @pytest.fixture
@@ -73,3 +74,7 @@ def authenticated_page(browser, app_config):
     yield page
 
     context.close()
+    
+@pytest.fixture
+def file_upload_page(page: Page):
+    return FileUploadPage(page)
