@@ -45,7 +45,7 @@ jobs:
 
       - name: Run tests on ${{ matrix.browser }}
         run: |
-          pytest tests/test_login.py tests/test_login_data.py tests/test_inventory.py tests/test_cart.py tests/test_checkout.py tests/test_file_upload.py tests/test_file_download.py tests/test_dialogs.py tests/test_multiple_tabs.py tests/test_iframe.py tests/test_network_interception.py -v --env=qa --browser ${{ matrix.browser }} --html=Reports/pwreport-${{ matrix.browser }}.html --self-contained-html --tracing=retain-on-failure --screenshot=only-on-failure --alluredir=allure-results-${{ matrix.browser }}
+          pytest tests/test_login.py tests/test_login_data.py tests/test_inventory.py tests/test_cart.py tests/test_checkout.py tests/test_file_upload.py tests/test_file_download.py tests/test_dialogs.py tests/test_multiple_tabs.py tests/ tests/test_network_interception.py -v --env=qa --browser ${{ matrix.browser }} --html=Reports/pwreport-${{ matrix.browser }}.html --self-contained-html --tracing=retain-on-failure --screenshot=only-on-failure --alluredir=allure-results-${{ matrix.browser }}
 
       - name: Upload HTML report for ${{ matrix.browser }}
         if: always()
