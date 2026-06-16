@@ -36,3 +36,5 @@ Reports/
 reports/
 
 auth/
+
+allure-results/'nallure-report/
