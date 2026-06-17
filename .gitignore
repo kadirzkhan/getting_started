@@ -37,4 +37,8 @@ reports/
 
 auth/
 
-allure-results/'nallure-report/
+/allure-results/
+/allure-report/
+/test-results/
+/Reports/
+/downloads/
