@@ -37,6 +37,7 @@ reports/
 
 auth/
 
+/allure_results/
 /allure-results/
 /allure-report/
 /test-results/
