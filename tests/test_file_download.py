@@ -1,5 +1,6 @@
 from pathlib import Path
 from playwright.sync_api import Page, expect
+from pytest_playwright.pytest_playwright import page
 
 
 def test_file_download(page: Page):
@@ -9,7 +10,7 @@ def test_file_download(page: Page):
     downloads_dir.mkdir(exist_ok=True)
 
     with page.expect_download() as download_info:
-        page.locator(".example a").first.click()
+        page.locator(".example a").nth(1).click()
 
     download = download_info.value
 
