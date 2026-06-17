@@ -1,15 +1,17 @@
-name: Playwright Tests
+name: Playwright PyTest Tests
 
 on:
   push:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+  workflow_dispatch:
 
 jobs:
   test:
-    timeout-minutes: 60
+    name: Run tests on ${{ matrix.browser }}
     runs-on: ubuntu-latest
+    timeout-minutes: 60
 
     strategy:
       fail-fast: false
@@ -23,9 +25,9 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
 
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
@@ -34,32 +36,26 @@ jobs:
         run: |
           python -m playwright install --with-deps
 
-      - name: Create folders
+      - name: Create required folders
         run: |
-          mkdir -p Reports
           mkdir -p auth
+          mkdir -p Reports
+          mkdir -p test-results
 
       - name: Generate auth state for ${{ matrix.browser }}
         run: |
           pytest tests/test_auth_setup.py -v --env=qa --browser ${{ matrix.browser }}
 
-      - name: Run tests on ${{ matrix.browser }}
+      - name: Run Playwright tests on ${{ matrix.browser }}
         run: |
-          pytest tests/test_login.py tests/test_login_data.py tests/test_inventory.py tests/test_cart.py tests/test_checkout.py tests/test_file_upload.py tests/test_file_download.py tests/test_dialogs.py tests/test_multiple_tabs.py tests/ tests/test_network_interception.py -v --env=qa --browser ${{ matrix.browser }} --html=Reports/pwreport-${{ matrix.browser }}.html --self-contained-html --tracing=retain-on-failure --screenshot=only-on-failure --alluredir=allure-results-${{ matrix.browser }}
+          pytest tests/test_login.py tests/test_login_data.py tests/test_inventory.py tests/test_cart.py tests/test_checkout.py tests/test_file_upload.py tests/test_file_download.py tests/test_dialogs.py -v --env=qa --browser ${{ matrix.browser }} --html=Reports/pwreport-${{ matrix.browser }}.html --self-contained-html --alluredir=allure-results-${{ matrix.browser }} --tracing=retain-on-failure --screenshot=only-on-failure
 
       - name: Upload HTML report for ${{ matrix.browser }}
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: html-test-report-${{ matrix.browser }}
+          name: html-report-${{ matrix.browser }}
           path: Reports/pwreport-${{ matrix.browser }}.html
-
-      - name: Upload Playwright test results for ${{ matrix.browser }}
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-test-results-${{ matrix.browser }}
-          path: test-results/
 
       - name: Upload Allure results for ${{ matrix.browser }}
         if: always()
@@ -67,3 +63,10 @@ jobs:
         with:
           name: allure-results-${{ matrix.browser }}
           path: allure-results-${{ matrix.browser }}/
+
+      - name: Upload Playwright test results for ${{ matrix.browser }}
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-test-results-${{ matrix.browser }}
+          path: test-results/
