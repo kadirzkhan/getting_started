@@ -46,5 +46,5 @@ def test_invalid_login(page: Page, app_config):
     with allure.step("Verify error message is displayed"):
         expect(login_page.error_message).to_be_visible()
         expect(login_page.error_message).to_contain_text(
-            "Username and password do gfg match"
+            "Username and password do not match"
         )
