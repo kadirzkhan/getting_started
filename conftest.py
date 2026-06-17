@@ -1,4 +1,5 @@
 import pytest
+import allure
 from playwright.sync_api import Page
 from pages.login_page import LoginPage
 from pages.inventory_page import InventoryPage
@@ -78,3 +79,46 @@ def authenticated_page(browser, app_config):
 @pytest.fixture
 def file_upload_page(page: Page):
     return FileUploadPage(page)
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    report = outcome.get_result()
+
+    # Save test failed status
+    if report.when == "call":
+        item.test_failed = report.failed
+
+        if report.failed:
+            page = item.funcargs.get("page") or item.funcargs.get("authenticated_page")
+
+            if page:
+                screenshots_dir = Path("allure-results/screenshots")
+                screenshots_dir.mkdir(parents=True, exist_ok=True)
+
+                screenshot_path = screenshots_dir / f"{item.name}.png"
+                page.screenshot(path=str(screenshot_path), full_page=True)
+
+                allure.attach.file(
+                    str(screenshot_path),
+                    name="Failure Screenshot",
+                    attachment_type=allure.attachment_type.PNG
+                )
+
+    # Attach trace after Playwright teardown creates trace.zip
+    if report.when == "teardown" and getattr(item, "test_failed", False):
+        test_results_dir = Path("test-results")
+
+        if test_results_dir.exists():
+            trace_files = list(test_results_dir.rglob("trace.zip"))
+
+            if trace_files:
+                latest_trace = max(trace_files, key=lambda file: file.stat().st_mtime)
+
+                allure.attach.file(
+                    str(latest_trace),
+                    name="Playwright Trace",
+                    attachment_type="application/zip",
+                    extension="zip"
+                )
