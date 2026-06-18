@@ -98,15 +98,24 @@ def pytest_runtest_makereport(item, call):
                 screenshots_dir.mkdir(parents=True, exist_ok=True)
 
                 screenshot_path = screenshots_dir / f"{item.name}.png"
-                page.screenshot(path=str(screenshot_path), full_page=True)
 
-                allure.attach.file(
-                    str(screenshot_path),
-                    name="Failure Screenshot",
-                    attachment_type=allure.attachment_type.PNG
-                )
+                try:
+                    page.screenshot(path=str(screenshot_path), full_page=False)
 
-    # Attach trace after Playwright teardown creates trace.zip
+                    allure.attach.file(
+                        str(screenshot_path),
+                        name="Failure Screenshot",
+                        attachment_type=allure.attachment_type.PNG
+                    )
+
+                except Exception as error:
+                    allure.attach(
+                        str(error),
+                        name="Screenshot Capture Failed",
+                        attachment_type=allure.attachment_type.TEXT
+                    )
+
+    # Attach trace after Playwright creates trace.zip
     if report.when == "teardown" and getattr(item, "test_failed", False):
         test_results_dir = Path("test-results")
 
