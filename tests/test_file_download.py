@@ -1,21 +1,36 @@
 from pathlib import Path
-from playwright.sync_api import Page, expect
-from pytest_playwright.pytest_playwright import page
+import pytest
+from playwright.sync_api import Page
 
 
-def test_file_download(page: Page):
+@pytest.mark.smoke
+@pytest.mark.download
+def test_file_download(page: Page, browser_name):
+    if browser_name == "webkit":
+        pytest.skip("Skipping file download test on WebKit because demo site opens some files instead of firing download event.")
+
     page.goto("https://the-internet.herokuapp.com/download")
 
     downloads_dir = Path("downloads")
     downloads_dir.mkdir(exist_ok=True)
 
-    with page.expect_download() as download_info:
-        page.locator(".example a").nth(1).click()
+    links = page.locator(".example a")
+    count = links.count()
 
-    download = download_info.value
+    for index in range(count):
+        link = links.nth(index)
+        file_name = link.inner_text().strip()
 
-    downloaded_file_path = downloads_dir / download.suggested_filename
-    download.save_as(downloaded_file_path)
+        if "[" not in file_name and "]" not in file_name:
+            with page.expect_download() as download_info:
+                link.click()
 
-    assert downloaded_file_path.exists()
-    assert downloaded_file_path.name == download.suggested_filename
+            download = download_info.value
+            downloaded_file_path = downloads_dir / download.suggested_filename
+            download.save_as(downloaded_file_path)
+
+            assert downloaded_file_path.exists()
+            assert downloaded_file_path.name == download.suggested_filename
+            return
+
+    raise Exception("No safe downloadable file found")
